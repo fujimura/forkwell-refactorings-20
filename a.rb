@@ -1,6 +1,7 @@
 require 'erb'
 require 'ostruct'
 require 'test/unit'
+require 'action_view'
 
 class User
   def initialize(role = :admin)
@@ -13,16 +14,17 @@ class User
 end
 
 module ViewHelper
+  include ActionView::Helpers::TagHelper
   def message_for_admin message
-    img_tag = '<img src="/assets/message/admin.png" />'
-    span_tag = "<span>#{message.body}</span>"
-    "<div>#{img_tag}#{span_tag}</div>"
+    img_tag = tag :img, src: "/assets/message/admin.png"
+    span_tag = content_tag :span, message.body
+    content_tag :div, img_tag + span_tag
   end
 
   def message_for_general message
-    img_tag = '<img src="/assets/message/general.png" />'
-    span_tag = "<span>#{message.body}</span>"
-    "<div>#{img_tag}#{span_tag}</div>"
+    img_tag = tag :img, src: "/assets/message/general.png"
+    span_tag = content_tag :span, message.body
+    content_tag :div, img_tag + span_tag
   end
 end
 
