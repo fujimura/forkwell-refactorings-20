@@ -15,16 +15,14 @@ end
 
 module ViewHelper
   include ActionView::Helpers::TagHelper
-  def message_for_admin message
-    img_tag = tag :img, src: "/assets/message/admin.png"
-    span_tag = content_tag :span, message.body
-    content_tag :div, img_tag + span_tag
-  end
+  def message_by_user_role user, message
+    src = if user.admin?
+            "/assets/message/admin.png"
+          else
+            "/assets/message/general.png"
+          end
 
-  def message_for_general message
-    img_tag = tag :img, src: "/assets/message/general.png"
-    span_tag = content_tag :span, message.body
-    content_tag :div, img_tag + span_tag
+    content_tag :div, tag(:img, src: src) + content_tag(:span, message.body)
   end
 end
 
@@ -55,8 +53,4 @@ class MyTest < Test::Unit::TestCase
 end
 
 __END__
-<% if current_user.admin? %>
-  <%= message_for_admin(@message) %>
-<% else %>
-  <%= message_for_general(@message) %>
-<% end %>
+<%= message_by_user_role(current_user, @message) %>
