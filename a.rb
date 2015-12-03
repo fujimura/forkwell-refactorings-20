@@ -10,7 +10,9 @@ class User
   def admin?
     @role == :admin
   end
+end
 
+module ViewHelper
   def message_for_admin message
     img_tag = '<img src="/assets/message/admin.png" />'
     span_tag = "<span>#{message.body}</span>"
@@ -27,6 +29,8 @@ end
 ERB_TEMPLATE = DATA.read
 
 class MyTest < Test::Unit::TestCase
+  include ViewHelper
+
   def test_admin
     current_user = User.new :admin
     @message = OpenStruct.new(body: "This is admin")
@@ -50,7 +54,7 @@ end
 
 __END__
 <% if current_user.admin? %>
-  <%= current_user.message_for_admin(@message) %>
+  <%= message_for_admin(@message) %>
 <% else %>
-  <%= current_user.message_for_general(@message) %>
+  <%= message_for_general(@message) %>
 <% end %>
